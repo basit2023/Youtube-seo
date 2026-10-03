@@ -1,0 +1,11 @@
+{
+  "name": "videoseo-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-seo-pages.mjs",
+    "test": "node tests/seo-engine.test.mjs && node tests/site-seo.test.mjs",
+    "check": "node --check assets/app.js && node --check assets/focused-tools.js && node --check assets/seo-engine.mjs && node --check scripts/build-seo-pages.mjs"
+  }
+}
