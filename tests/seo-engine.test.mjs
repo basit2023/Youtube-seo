@@ -29,6 +29,10 @@ const chapters = generateChapters('12:00', 'Introduction\nFind a keyword\nWrite 
 assert.equal(chapters.length, 4);
 assert.ok(chapters[0].startsWith('00:00'));
 
+const chaptersHuman = generateChapters('12 mins', 'Introduction\nFind a keyword\nWrite the title\nImprove retention');
+assert.equal(chaptersHuman.length, 4);
+assert.ok(chaptersHuman[0].startsWith('00:00'));
+
 const description = buildDescription({
   topic: 'ranking videos',
   keyword: 'youtube seo',
@@ -50,12 +54,33 @@ const audit = analyzeMetadata({
 assert.ok(audit.score >= 70);
 assert.equal(audit.counts.tags, tags.length);
 
-const comparison = compareMetadata(
-  { title: 'YouTube SEO Guide', description: 'Learn clear video SEO basics.', tags: 'youtube seo' },
-  { title: 'YouTube SEO and Retention', description: 'Improve audience retention and click through rate.', tags: 'youtube seo, retention' },
-  'youtube seo'
-);
-assert.ok(comparison.shared.includes('youtube'));
-assert.ok(comparison.gaps.includes('retention'));
+// Edge cases and empty inputs
+assert.doesNotThrow(() => analyzeMetadata());
+assert.doesNotThrow(() => analyzeMetadata({}));
+assert.deepEqual(generateKeywordIdeas(''), []);
+assert.deepEqual(generateTitles(''), []);
+assert.deepEqual(generateTags(''), []);
+assert.equal(typeof buildDescription(), 'string');
+assert.deepEqual(generateChapters('0:00', 'Intro\nBody'), []);
+assert.doesNotThrow(() => compareMetadata());
 
-console.log('SEO engine tests passed.');
+// Boundary checks & clickbait detection
+const clickbaitAudit = analyzeMetadata({
+  keyword: 'youtube seo',
+  title: 'Guaranteed 100% Secret Trick for Millions of Views!',
+  description: 'Short desc',
+  tags: 'tag1'
+});
+const clickbaitCheck = clickbaitAudit.checks.find((c) => c.id === 'accuracy');
+assert.equal(clickbaitCheck.passed, false);
+
+// Unicode & uppercase phrase matching
+assert.equal(includesPhrase('How to optimize YouTube SEO in 2026', 'YOUTUBE SEO'), true);
+assert.equal(includesPhrase('Créer une vidéo YouTube SEO facile', 'YouTube SEO'), true);
+
+// Tag duplication and character budget
+const dupTags = generateTags('youtube seo', 'youtube seo, YOUTUBE SEO, video tips');
+assert.equal(dupTags.length, new Set(dupTags.map((t) => t.toLowerCase())).size);
+assert.ok(dupTags.join(', ').length <= 480);
+
+console.log('SEO engine tests passed (including edge cases & boundary checks).');

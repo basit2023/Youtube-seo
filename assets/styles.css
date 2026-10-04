@@ -54,7 +54,10 @@ a { color: inherit; text-decoration: none; }
 .workspace-wrap { width: min(1240px, calc(100% - 32px)); margin: 0 auto; }
 .workspace-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 20px; }
 .workspace-heading h2, .method h2, .faq-section h2 { margin: 8px 0 0; font: 700 clamp(28px, 4vw, 44px)/1.1 var(--font-display); letter-spacing: -.04em; }
-.reset-button { color: var(--muted); background: transparent; border: 0; border-bottom: 1px solid #4b5060; cursor: pointer; padding: 4px 0; }
+.workspace-actions { display: flex; align-items: center; gap: 16px; }
+.sample-button { color: var(--lime); background: rgba(201,255,85,.08); border: 1px solid rgba(201,255,85,.25); border-radius: 8px; cursor: pointer; padding: 6px 12px; font-size: 12px; font-weight: 600; transition: .2s ease; }
+.sample-button:hover { background: rgba(201,255,85,.18); transform: translateY(-1px); }
+.reset-button { color: var(--muted); background: transparent; border: 0; border-bottom: 1px solid #4b5060; cursor: pointer; padding: 4px 0; font-size: 12px; }
 .reset-button:hover { color: var(--ink); }
 .app-shell { min-height: 760px; display: grid; grid-template-columns: 230px 1fr; background: rgba(14,17,25,.9); border: 1px solid var(--line); border-radius: 26px; box-shadow: 0 34px 100px rgba(0,0,0,.32); overflow: hidden; }
 .tool-nav { padding: 30px 18px; border-right: 1px solid var(--line); background: rgba(4,6,11,.42); }

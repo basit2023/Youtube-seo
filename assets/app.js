@@ -199,6 +199,29 @@ function restoreState() {
   } catch { localStorage.removeItem('videoseo-lab-draft'); }
 }
 
+byId('loadSampleWorkspace')?.addEventListener('click', () => {
+  byId('studioKeyword').value = 'youtube seo for beginners';
+  byId('studioTitle').value = 'YouTube SEO for Beginners: Step-by-Step Upload Strategy';
+  byId('studioDescription').value = `youtube seo for beginners can feel overwhelming when every creator recommends a different strategy. In this step-by-step walkthrough, I cover how to choose one target search phrase, optimize your video packaging, and structure your introduction for viewer retention.\n\nYOU'LL LEARN\n• How to pick a realistic target search phrase\n• Formatting your title and thumbnail for high CTR\n• Writing opening description lines that give clear context\n• Creating clean video chapters\n\nCHAPTERS\n00:00 Introduction\n01:45 Finding a focused target phrase\n04:30 Writing a clear title promise\n07:15 Structuring the description & chapters\n10:00 Reviewing viewer retention reports\n\nHelpful resource: https://youtube.fastsitecheck.com/about.html\n\nShare what part of YouTube SEO you want covered in the next guide.\n\n#YouTubeSeo #VideoMarketing #CreatorTips`;
+  byId('studioTags').value = 'youtube seo for beginners, youtube seo tutorial, video ranking tips, youtube growth strategy, content creator guide';
+  byId('studioThumbnail').value = 'Rank Smarter 2026';
+  byId('studioHook').value = 'In this video, I will show you how to optimize your YouTube video SEO step by step for better discovery.';
+  byId('keywordSeed').value = 'youtube seo for beginners';
+  byId('titleTopic').value = 'rank YouTube videos';
+  byId('titleKeyword').value = 'youtube seo for beginners';
+  byId('descTopic').value = 'youtube seo for beginners';
+  byId('descKeyword').value = 'youtube seo for beginners';
+  byId('chapterDuration').value = '12:30';
+  byId('chapterOutline').value = 'Introduction\nFinding a focused target phrase\nWriting a clear title promise\nStructuring the description & chapters\nReviewing viewer retention reports';
+  byId('thumbnailWords').value = 'Rank Smarter 2026';
+  byId('thumbnailTitle').value = 'YouTube SEO for Beginners: Step-by-Step Upload Strategy';
+  document.querySelectorAll('[data-thumb-check]').forEach((checkbox) => { checkbox.checked = true; });
+  renderStudio();
+  renderThumbnail();
+  saveState();
+  showToast('Sample video draft loaded');
+});
+
 byId('resetWorkspace').addEventListener('click', () => {
   stateFields.forEach((id) => { if (byId(id)) byId(id).value = ''; });
   document.querySelectorAll('[data-thumb-check]').forEach((checkbox) => { checkbox.checked = false; });

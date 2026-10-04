@@ -50,7 +50,7 @@ export function analyzeMetadata(input = {}) {
     check('spoken-hook', 'Opening hook supports the title promise', spokenHook.length >= 20 && includesPhrase(spokenHook, keyword), 8, 'Say what the viewer will learn early, using natural words that match the topic.'),
     check('tags', 'Tags are focused rather than stuffed', tags.length >= 3 && tags.length <= 12, 5, 'Use a small set of exact, variant, topical, and common-misspelling tags.'),
     check('tag-unique', 'Tags are unique', uniqueTags.size === tags.length && tags.length > 0, 3, 'Remove duplicated tags; repetition does not create extra relevance.'),
-    check('chapters', 'Description includes valid-looking chapters', chapterLines.length >= 3 && /^(?:00:00|0:00)\s+/m.test(description), 7, 'Use at least three ascending timestamps, start at 00:00, and keep chapters at least 10 seconds apart.'),
+    check('chapters', 'Description includes valid-looking chapters', chapterLines.length >= 3 && /^\s*(?:00:00|0:00)(?:\s+|-)/m.test(description), 7, 'Use at least three ascending timestamps, start at 00:00, and keep chapters at least 10 seconds apart.'),
     check('thumbnail', 'Thumbnail copy is short and distinct', thumbnailText.length >= 2 && thumbnailText.length <= 28, 8, 'Use a short complementary message instead of repeating the full title.'),
     check('accuracy', 'Title avoids obvious clickbait patterns', !/(guaranteed|100% guaranteed|secret trick|instant millions|you won.?t believe)/i.test(title) && title.length > 0, 5, 'Make a compelling promise you can deliver. Misleading packaging damages retention and trust.')
   ];
@@ -169,7 +169,9 @@ export function buildDescription({ topic, keyword, audience, takeaways, link, ct
 }
 
 export function hashtag(value) {
-  return clean(value).replace(/[^\p{L}\p{N}]+/gu, '');
+  const words = clean(value).split(/\s+/).filter(Boolean);
+  if (!words.length) return 'YouTube';
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('').replace(/[^\p{L}\p{N}]+/gu, '');
 }
 
 function parseDuration(value) {
@@ -177,9 +179,19 @@ function parseDuration(value) {
   if (!raw) return 0;
   if (/^\d+$/.test(raw)) return Number(raw) * 60;
   const parts = raw.split(':').map(Number);
-  if (parts.some(Number.isNaN)) return 0;
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length >= 2 && !parts.some(Number.isNaN)) {
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+  const hrMatch = raw.match(/(\d+)\s*(?:h|hr|hrs|hour|hours)/i);
+  const minMatch = raw.match(/(\d+)\s*(?:m|min|mins|minute|minutes)/i);
+  const secMatch = raw.match(/(\d+)\s*(?:s|sec|secs|second|seconds)/i);
+  if (hrMatch || minMatch || secMatch) {
+    const hours = hrMatch ? Number(hrMatch[1]) : 0;
+    const minutes = minMatch ? Number(minMatch[1]) : 0;
+    const seconds = secMatch ? Number(secMatch[1]) : 0;
+    return hours * 3600 + minutes * 60 + seconds;
+  }
   return 0;
 }
 

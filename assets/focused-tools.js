@@ -63,10 +63,25 @@ const configs = {
   },
   thumbnail: {
     heading: 'Check whether the thumbnail supports the title',
-    note: 'This quick review focuses on clarity and promise alignment. Use the full workspace for an image preview.',
-    form: `<label class="wide">Video title<input id="title" maxlength="100" required></label><label class="wide">Thumbnail words<input id="words" maxlength="40" required></label><label><input class="inline-check" type="checkbox" id="contrast"> Strong contrast</label><label><input class="inline-check" type="checkbox" id="subject"> Clear subject</label><label><input class="inline-check" type="checkbox" id="accurate"> Accurate promise</label><label><input class="inline-check" type="checkbox" id="mobile"> Readable on mobile</label>`,
+    note: 'Review wording, visual clarity, title alignment, and preview your thumbnail image directly on the page.',
+    form: `<label class="wide">Video title<input id="title" maxlength="100" placeholder="e.g. YouTube SEO Guide for Beginners" required></label><label class="wide">Thumbnail words<input id="words" maxlength="40" placeholder="e.g. Rank Smarter" required></label><label class="wide">Thumbnail image (optional)<input id="focusedThumbFile" type="file" accept="image/png,image/jpeg,image/webp"></label><label><input class="inline-check" type="checkbox" id="contrast"> Strong contrast</label><label><input class="inline-check" type="checkbox" id="subject"> Clear subject</label><label><input class="inline-check" type="checkbox" id="accurate"> Accurate promise</label><label><input class="inline-check" type="checkbox" id="mobile"> Readable on mobile</label>`,
     action: 'Check thumbnail readiness',
-    run() { const words=get('words').trim(); const title=get('title').trim(); const checks=['contrast','subject','accurate','mobile'].filter((id)=>document.getElementById(id).checked).length; const score=Math.min(100,checks*18+(words.length>=2&&words.length<=28?14:0)+(title.length>=35&&title.length<=70?14:0)); output(`<h3>Thumbnail readiness: <b>${score}%</b></h3>${row('Thumbnail copy', words.length <= 28 ? 'Concise' : 'Shorten it')}${row('Title length', `${title.length}/100`)}${row('Manual checks', `${checks}/4`)}`); }
+    run() {
+      const words = get('words').trim();
+      const title = get('title').trim();
+      const checks = ['contrast', 'subject', 'accurate', 'mobile'].filter((id) => document.getElementById(id)?.checked).length;
+      const score = Math.min(100, checks * 18 + (words.length >= 2 && words.length <= 28 ? 14 : 0) + (title.length >= 35 && title.length <= 70 ? 14 : 0));
+      output(`<h3>Thumbnail readiness: <b>${score}%</b></h3><div class="youtube-preview" style="margin: 15px 0;"><div class="thumb-canvas" id="focusedThumbCanvas" style="aspect-ratio:16/9; display:flex; align-items:center; padding:20px; border-radius:10px; background-color:#222737; background-image:linear-gradient(145deg,#202737,#0c0f17); background-size:cover; background-position:center; overflow:hidden;"><span style="font:800 28px var(--font-display); text-transform:uppercase; text-shadow:0 2px 10px rgba(0,0,0,.7);">${esc(words || 'Your thumbnail')}</span></div><div class="preview-copy"><div class="avatar"></div><div><strong>${esc(title || 'Your title here')}</strong><span>Your channel · 1.2K views · 2 hours ago</span></div></div></div>${row('Thumbnail copy', words.length <= 28 ? 'Concise' : 'Shorten it')}${row('Title length', `${title.length}/100`)}${row('Manual checks', `${checks}/4`)}`);
+      const fileInput = document.getElementById('focusedThumbFile');
+      if (fileInput?.files?.[0]) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const canvas = document.getElementById('focusedThumbCanvas');
+          if (canvas) canvas.style.backgroundImage = `linear-gradient(90deg, rgba(6,8,14,.72), rgba(6,8,14,.08)), url(${reader.result})`;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    }
   },
   compare: {
     heading: 'Compare topic coverage without copying',
@@ -82,9 +97,20 @@ if (mount && config) {
   mount.innerHTML = `<h2>${esc(config.heading)}</h2><p>${esc(config.note)}</p><form class="focused-form" id="focusedForm">${config.form}<button class="button primary" type="submit">${esc(config.action)}</button></form><div class="focused-output" id="focusedOutput" aria-live="polite"></div>`;
   document.getElementById('focusedForm').addEventListener('submit', (event) => { event.preventDefault(); config.run(); });
   mount.addEventListener('click', async (event) => {
-    if (!event.target.closest('[data-copy]')) return;
+    const btn = event.target.closest('[data-copy]');
+    if (!btn) return;
     const field = document.getElementById('copyOutput');
-    try { await navigator.clipboard.writeText(field.value); event.target.textContent = 'Copied'; }
-    catch { field.focus(); field.select(); event.target.textContent = 'Press Ctrl+C'; }
+    if (!field) return;
+    const originalText = btn.dataset.originalText || btn.textContent;
+    btn.dataset.originalText = originalText;
+    try {
+      await navigator.clipboard.writeText(field.value);
+      btn.textContent = 'Copied!';
+    } catch {
+      field.focus();
+      field.select();
+      btn.textContent = 'Press Ctrl+C';
+    }
+    setTimeout(() => { btn.textContent = originalText; }, 2000);
   });
 }

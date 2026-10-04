@@ -26,16 +26,57 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "VideoSEO Lab",
-    "url": "https://youtube.fastsitecheck.com/",
-    "publisher": {"@type": "Organization", "name": "FastSiteCheck", "url": "https://fastsitecheck.com/"},
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Any",
-    "description": "Free YouTube SEO tools with no signup or installation for titles, descriptions, keyword ideas, tags, chapters, and metadata review.",
-    "isAccessibleForFree": true,
-    "featureList": "YouTube SEO checker, keyword mapper, title generator, description builder, tag generator, chapter generator, thumbnail checker, competitor metadata comparison",
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "VideoSEO Lab by FastSiteCheck",
+        "url": "https://youtube.fastsitecheck.com/",
+        "publisher": {"@type": "Organization", "name": "FastSiteCheck", "url": "https://fastsitecheck.com/"},
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "description": "Free YouTube SEO tools with no signup or installation for titles, descriptions, keyword ideas, tags, chapters, and metadata review.",
+        "isAccessibleForFree": true,
+        "featureList": "YouTube SEO checker, keyword mapper, title generator, description builder, tag generator, chapter generator, thumbnail checker, competitor metadata comparison",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I use these YouTube SEO tools without signing up?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every tool on VideoSEO Lab is free to use without an account, email address, or credit card."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need to install a browser extension?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tools run on this website directly inside your browser without installing any browser extension."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does a high score guarantee YouTube rankings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The score is a preparation checklist. YouTube search and recommendations also respond to viewer behavior, retention, and satisfaction."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are tags still important for YouTube SEO?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "YouTube's official guidance states titles, thumbnails, and descriptions matter more. Tags primarily help with common misspellings or wording variations."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -78,7 +119,10 @@
           <span class="section-kicker">Creator workspace</span>
           <h2>Build the complete video package</h2>
         </div>
-        <button class="reset-button" id="resetWorkspace" type="button">Reset workspace</button>
+        <div class="workspace-actions">
+          <button class="sample-button" id="loadSampleWorkspace" type="button">✦ Load sample draft</button>
+          <button class="reset-button" id="resetWorkspace" type="button">Reset workspace</button>
+        </div>
       </div>
 
       <div class="app-shell">
